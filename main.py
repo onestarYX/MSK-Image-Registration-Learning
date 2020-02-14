@@ -150,7 +150,7 @@ botLeftCornerX = topLeftCornerX
 botLeftCornerY = topLeftCornerY + sqrLength
 botRightCornerX = topLeftCornerX + sqrLength
 botRightCornerY = topLeftCornerY + sqrLength
-print(botRightCornerY-topRightCornerY)
+# print(botRightCornerY-topRightCornerY)
 patchA = img1[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
 cv.imshow('image', patchA)
 cv.waitKey(0)
