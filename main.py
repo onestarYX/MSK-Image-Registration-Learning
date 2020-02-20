@@ -2,15 +2,24 @@ import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
 import random
+import glob
+
 
 img1 = cv.imread('IMG_1.jpg')
 img2 = cv.imread('IMG_2.jpg')
 img_cpy = cv.imread('img_cpy.jpg')
+
+imgList = []
+
+for path in glob.glob("./val2017/*.jpg"):
+    imgList.append(cv.imread(path))
 # cv.imwrite('img_cpy.jpg', img)
 print('image 1 shape: ')
 print(img1.shape)
 print('image 2 shape: ')
 print(img2.shape)
+print('image set length: ')
+print(len(imgList))
 # print('image size: ')
 # print(img.size)
 # print('image data type: ')
@@ -140,8 +149,21 @@ Corner Detection
 
 
 # Random Projective transformation
-bound = 100
-sqrLength = 600
+height_min = 100000
+for img in imgList:
+    if img.shape[0] < height_min:
+        height_min = img.shape[0]
+
+width_min = 100000
+for img in imgList:
+    if img.shape[1] < width_min:
+        width_min = img.shape[1]
+
+print(height_min, width_min);
+
+img1Gray = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
+bound = 20
+sqrLength = 80
 topLeftCornerX = random.randrange(bound + 1, img1.shape[1] - bound - sqrLength)
 topLeftCornerY = random.randrange(bound + 1, img1.shape[0] - bound - sqrLength)
 topRightCornerX = topLeftCornerX + sqrLength
@@ -151,7 +173,7 @@ botLeftCornerY = topLeftCornerY + sqrLength
 botRightCornerX = topLeftCornerX + sqrLength
 botRightCornerY = topLeftCornerY + sqrLength
 # print(botRightCornerY-topRightCornerY)
-patchA = img1[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
+patchA = img1Gray[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
 cv.imshow('image', patchA)
 cv.waitKey(0)
 cv.destroyAllWindows()
@@ -195,7 +217,7 @@ HInverse = np.linalg.inv(H)
 # cv.waitKey(0)
 # cv.destroyAllWindows()
 
-img1Warped = cv.warpPerspective(img1, HInverse, (img1.shape[0], img1.shape[1]))
+img1Warped = cv.warpPerspective(img1Gray, HInverse, (img1Gray.shape[0], img1Gray.shape[1]))
 # cv.imshow('image', img1Warped)
 # cv.waitKey(0)
 # cv.destroyAllWindows()
