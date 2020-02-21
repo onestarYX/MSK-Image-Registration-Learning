@@ -74,3 +74,6 @@ fabric.properties
 .idea/workspace.xml
 
 *.jpg
+.idea\misc.xml
+.idea\test.iml
+.idea\worspace.xml
