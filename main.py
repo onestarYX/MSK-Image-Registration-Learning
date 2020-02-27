@@ -3,28 +3,186 @@ import numpy as np
 from matplotlib import pyplot as plt
 import random
 import glob
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# print(tf.__version__)
+
+""" Generate the dataset for rigid image registration (using MS-COCO dataset) """
+# imgList = []
+#
+# numOfFile = 2000
+# count = 0
+# for path in glob.glob("./val2017/*.jpg"):
+#     if count < numOfFile:
+#         imgList.append(cv.imread(path))
+#     count += 1
+# print('image set length: ')
+# print(len(imgList))
+#
+# # Random Projective transformation
+#
+# # Get the minimum height and width of all images in the image set.
+# height_min = 100000
+# for img in imgList:
+#     if img.shape[0] < height_min:
+#         height_min = img.shape[0]
+#
+# width_min = 100000
+# for img in imgList:
+#     if img.shape[1] < width_min:
+#         width_min = img.shape[1]
+#
+# print(height_min, width_min);
+#
+# # Transform the color scheme from BGR to gray scale.
+# for i in range(len(imgList)):
+#     imgList[i] = cv.cvtColor(imgList[i], cv.COLOR_BGR2GRAY)
+#
+# # cv.imshow('image', imgList[200])
+# # cv.waitKey(0)
+# # cv.destroyAllWindows()
+#
+# # Generate the training set.
+# trainingSet = []
+# badpair = 0
+# temp = None
+# for img in imgList:
+#     bound = 20
+#     sqrLength = 100
+#     topLeftCornerX = random.randrange(bound + 1, img.shape[1] - bound - sqrLength)
+#     topLeftCornerY = random.randrange(bound + 1, img.shape[0] - bound - sqrLength)
+#     topRightCornerX = topLeftCornerX + sqrLength
+#     topRightCornerY = topLeftCornerY
+#     botLeftCornerX = topLeftCornerX
+#     botLeftCornerY = topLeftCornerY + sqrLength
+#     botRightCornerX = topLeftCornerX + sqrLength
+#     botRightCornerY = topLeftCornerY + sqrLength
+#     # print(botRightCornerY-topRightCornerY)
+#     patchA = img[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
+#     # cv.imshow('image', patchA)
+#     # cv.waitKey(0)
+#     # cv.destroyAllWindows()
+#     topLeftRandomX = random.randrange(-bound, bound)
+#     topLeftRandomY = random.randrange(-bound, bound)
+#     topRightRandomX = random.randrange(-bound, bound)
+#     topRightRandomY = random.randrange(-bound, bound)
+#     botLeftRandomX = random.randrange(-bound, bound)
+#     botLeftRandomY = random.randrange(-bound, bound)
+#     botRightRandomX = random.randrange(-bound, bound)
+#     botRightRandomY = random.randrange(-bound, bound)
+#
+#     newTopLeftCornerX = topLeftCornerX + topLeftRandomX
+#     newTopLeftCornerY = topLeftCornerY + topLeftRandomY
+#     newTopRightCornerX = topRightCornerX + topRightRandomX
+#     newTopRightCornerY = topRightCornerY + topRightRandomY
+#     newBotLeftCornerX = botLeftCornerX + botLeftRandomX
+#     newBotLeftCornerY = botLeftCornerY + botLeftRandomY
+#     newBotRightCornerX = botRightCornerX + botRightRandomX
+#     newBotRightCornerY = botRightCornerY + botRightRandomY
+#
+#     src = np.float32([
+#         [topLeftCornerX, topLeftCornerY],
+#         [topRightCornerX, topRightCornerY],
+#         [botLeftCornerX, botLeftCornerY],
+#         [botRightCornerX, botRightCornerY]
+#     ])
+#
+#     dst = np.float32([
+#         [newTopLeftCornerX, newTopLeftCornerY],
+#         [newTopRightCornerX, newTopRightCornerY],
+#         [newBotLeftCornerX, newBotLeftCornerY],
+#         [newBotRightCornerX, newBotRightCornerY]
+#     ])
+#     H = cv.getPerspectiveTransform(src, dst)
+#
+#     HInverse = np.linalg.inv(H)
+#
+#     imgWarped = cv.warpPerspective(img, HInverse, (img.shape[0], img.shape[1]))
+#
+#     patchB = imgWarped[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
+#
+#     if patchA.shape[0] != patchB.shape[0] or patchA.shape[1] != patchB.shape[1]:
+#         badpair += 1
+#     else:
+#         patchAReshaped = np.reshape(patchA, -1)
+#         patchBReshaped = np.reshape(patchB, -1)
+#         HReshaped = np.reshape(H, -1)
+#         dataReshaped = np.append(patchAReshaped, patchBReshaped)
+#         dataReshaped = np.append(dataReshaped, HReshaped)
+#         trainingSet.append(dataReshaped)
+#
+# print(badpair)
+# print(trainingSet[0].shape)
+# # print(trainingSet[100][0].shape)
+# # print(trainingSet[100][1].shape)
+# # print(trainingSet[100][2].shape)
+# # cv.imshow('image', trainingSet[100][0])
+# # cv.waitKey(0)
+# # cv.destroyAllWindows()
+# # cv.imshow('image', trainingSet[100][1])
+# # cv.waitKey(0)
+# # cv.destroyAllWindows()
+#
+# f = open("train.txt", "w")
+# for imgPair in trainingSet:
+#     for i in range(imgPair.shape[0]):
+#         f.write(str(imgPair[i]) + " ")
+#     f.write('\n')
+# f.close()
 
 
+"""======== Using basic TensorFlow to do the regression model ==========="""
+
+""" Read data from txt file"""
+data = np.loadtxt("./train.txt")
+print(data.shape)
+
+imgs = tf.data.Dataset.from_tensor_slices(data[:, :-9])
+labels = tf.data.Dataset.from_tensor_slices(data[:, -9:])
+
+print(type(imgs))
+# print(tf.shape(imgs))
+# print(tf.shape(labels))
+
+train_imgs = imgs.take(1000)
+train_labels = labels.take(1000)
+val_imgs = imgs.skip(1000)
+val_labels = labels.skip(1000)
+
+print(train_imgs.shape)
+print(train_labels.shape)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+""" The following part are learning part. """
 # img1 = cv.imread('IMG_1.jpg')
 # img2 = cv.imread('IMG_2.jpg')
 # img_cpy = cv.imread('img_cpy.jpg')
-
-imgList = []
-
-numOfFile = 2000
-count = 0
-for path in glob.glob("./val2017/*.jpg"):
-    if count < numOfFile:
-        imgList.append(cv.imread(path))
-    count += 1
 
 # cv.imwrite('img_cpy.jpg', img)
 # print('image 1 shape: ')
 # print(img1.shape)
 # print('image 2 shape: ')
 # print(img2.shape)
-print('image set length: ')
-print(len(imgList))
+
 # print('image size: ')
 # print(img.size)
 # print('image data type: ')
@@ -151,124 +309,6 @@ Corner Detection
 # cv.imshow('image', img1Shrink)
 # cv.waitKey(0)
 # cv.destroyAllWindows()
-
-
-# Random Projective transformation
-
-# Get the minimum height and width of all images in the image set.
-height_min = 100000
-for img in imgList:
-    if img.shape[0] < height_min:
-        height_min = img.shape[0]
-
-width_min = 100000
-for img in imgList:
-    if img.shape[1] < width_min:
-        width_min = img.shape[1]
-
-print(height_min, width_min);
-
-# Transform the color scheme from BGR to gray scale.
-for i in range(len(imgList)):
-    imgList[i] = cv.cvtColor(imgList[i], cv.COLOR_BGR2GRAY)
-
-# cv.imshow('image', imgList[200])
-# cv.waitKey(0)
-# cv.destroyAllWindows()
-
-# Generate the training set.
-trainingSet = []
-badpair = 0
-temp = None
-for img in imgList:
-    bound = 20
-    sqrLength = 100
-    topLeftCornerX = random.randrange(bound + 1, img.shape[1] - bound - sqrLength)
-    topLeftCornerY = random.randrange(bound + 1, img.shape[0] - bound - sqrLength)
-    topRightCornerX = topLeftCornerX + sqrLength
-    topRightCornerY = topLeftCornerY
-    botLeftCornerX = topLeftCornerX
-    botLeftCornerY = topLeftCornerY + sqrLength
-    botRightCornerX = topLeftCornerX + sqrLength
-    botRightCornerY = topLeftCornerY + sqrLength
-    # print(botRightCornerY-topRightCornerY)
-    patchA = img[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
-    # cv.imshow('image', patchA)
-    # cv.waitKey(0)
-    # cv.destroyAllWindows()
-    topLeftRandomX = random.randrange(-bound, bound)
-    topLeftRandomY = random.randrange(-bound, bound)
-    topRightRandomX = random.randrange(-bound, bound)
-    topRightRandomY = random.randrange(-bound, bound)
-    botLeftRandomX = random.randrange(-bound, bound)
-    botLeftRandomY = random.randrange(-bound, bound)
-    botRightRandomX = random.randrange(-bound, bound)
-    botRightRandomY = random.randrange(-bound, bound)
-
-    newTopLeftCornerX = topLeftCornerX + topLeftRandomX
-    newTopLeftCornerY = topLeftCornerY + topLeftRandomY
-    newTopRightCornerX = topRightCornerX + topRightRandomX
-    newTopRightCornerY = topRightCornerY + topRightRandomY
-    newBotLeftCornerX = botLeftCornerX + botLeftRandomX
-    newBotLeftCornerY = botLeftCornerY + botLeftRandomY
-    newBotRightCornerX = botRightCornerX + botRightRandomX
-    newBotRightCornerY = botRightCornerY + botRightRandomY
-
-    src = np.float32([
-        [topLeftCornerX, topLeftCornerY],
-        [topRightCornerX, topRightCornerY],
-        [botLeftCornerX, botLeftCornerY],
-        [botRightCornerX, botRightCornerY]
-    ])
-
-    dst = np.float32([
-        [newTopLeftCornerX, newTopLeftCornerY],
-        [newTopRightCornerX, newTopRightCornerY],
-        [newBotLeftCornerX, newBotLeftCornerY],
-        [newBotRightCornerX, newBotRightCornerY]
-    ])
-    H = cv.getPerspectiveTransform(src, dst)
-
-    HInverse = np.linalg.inv(H)
-
-    imgWarped = cv.warpPerspective(img, HInverse, (img.shape[0], img.shape[1]))
-
-    patchB = imgWarped[topLeftCornerY:botLeftCornerY, topLeftCornerX:topRightCornerX]
-
-    if patchA.shape[0] != patchB.shape[0] or patchA.shape[1] != patchB.shape[1]:
-        badpair += 1
-    else:
-        patchAReshaped = np.reshape(patchA, -1)
-        patchBReshaped = np.reshape(patchB, -1)
-        HReshaped = np.reshape(H, -1)
-        dataReshaped = np.append(patchAReshaped, patchBReshaped)
-        dataReshaped = np.append(dataReshaped, HReshaped)
-        trainingSet.append(dataReshaped)
-
-print(badpair)
-print(trainingSet[0].shape)
-# print(trainingSet[100][0].shape)
-# print(trainingSet[100][1].shape)
-# print(trainingSet[100][2].shape)
-# cv.imshow('image', trainingSet[100][0])
-# cv.waitKey(0)
-# cv.destroyAllWindows()
-# cv.imshow('image', trainingSet[100][1])
-# cv.waitKey(0)
-# cv.destroyAllWindows()
-
-f = open("train.txt", "w")
-for imgPair in trainingSet:
-    for i in range(imgPair.shape[0]):
-        f.write(str(imgPair[i]) + " ")
-    f.write('\n')
-f.close()
-
-
-
-
-
-
 
 
 """
