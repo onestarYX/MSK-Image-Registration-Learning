@@ -7,6 +7,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+# import tensorflow_docs as tfdocs
+# import tensorflow_docs.plots
+# import tensorflow_docs.modeling
+
 # print(tf.__version__)
 
 """ Generate the dataset for rigid image registration (using MS-COCO dataset) """
@@ -139,29 +143,109 @@ from tensorflow.keras import layers
 data = np.loadtxt("./train.txt")
 print(data.shape)
 
-imgs = tf.data.Dataset.from_tensor_slices(data[:, :-9])
-labels = tf.data.Dataset.from_tensor_slices(data[:, -9:])
+imgs = data[:, :-9]
+print(imgs.shape)
+labels = data[:, -9:]
+print(labels.shape)
 
-print(type(imgs))
-# print(tf.shape(imgs))
-# print(tf.shape(labels))
-
-train_imgs = imgs.take(1000)
-train_labels = labels.take(1000)
-val_imgs = imgs.skip(1000)
-val_labels = labels.skip(1000)
+train_imgs = imgs
+train_labels = labels
+# val_imgs = imgs[1000:]
+# val_labels = labels[1000:]
 
 print(train_imgs.shape)
 print(train_labels.shape)
+# print(val_imgs.shape)
+# print(val_labels.shape)
 
+train_imgs = train_imgs / 255.0
+# val_imgs = val_imgs / 255.0
 
+def build_model():
+    model = keras.Sequential([
+        layers.Dense(1000, activation='relu', input_shape=(20000,)),
+        layers.Dense(500, activation='relu'),
+        layers.Dense(9)
+    ])
 
+    optimizer = tf.keras.optimizers.RMSprop(0.001)
 
+    model.compile(loss='mse',
+                  optimizer=optimizer,
+                  metrics=['mae', 'mse'])
+    return model
 
+model = build_model()
 
+print(model.summary())
 
+example_batch = train_imgs[0:10]
+example_result = model.predict(example_batch)
+print(example_result)
 
+EPOCHS = 100
 
+history = model.fit(
+  train_imgs, train_labels,
+  epochs=EPOCHS, validation_split = 0.2, verbose=0)
+
+print(history.history)
+
+plt.plot(history.history['loss'])
+plt.legend(["training_loss", "validation_loss"])
+plt.xlabel("Iteration")
+plt.ylabel("Loss")
+plt.title("Loss plot")
+plt.show()
+
+# imgs = tf.data.Dataset.from_tensor_slices(data[:, :-9])
+# labels = tf.data.Dataset.from_tensor_slices(data[:, -9:])
+# print(len(list(imgs)))
+# print(imgs.element_spec)
+# print(labels.element_spec)
+
+# train_imgs = imgs.take(1000)
+# train_labels = labels.take(1000)
+# val_imgs = imgs.skip(1000)
+# val_labels = labels.skip(1000)
+
+# print(len(list(train_imgs)))
+# print(len(list(val_labels)))
+# print(train_imgs.element_spec)
+# print(val_labels.element_spec)
+
+# max = 0
+# for elem in imgs:
+#     for value in elem.numpy():
+#         if value > max:
+#             max = value
+# print(max)
+
+# Normalization
+# train_imgs = train_imgs / 255.0
+# val_imgs = val_imgs / 255.0
+
+# def build_model():
+#     model = keras.Sequential([
+#         layers.Dense(1000, activation='relu', input_shape=(20000,)),
+#         layers.Dense(500, activation='relu'),
+#         layers.Dense(9)
+#     ])
+#
+#     optimizer = tf.keras.optimizers.RMSprop(0.001)
+#
+#     model.compile(loss='mse',
+#                   optimizer=optimizer,
+#                   metrics=['mae', 'mse'])
+#     return model
+#
+# model = build_model()
+#
+# print(model.summary())
+#
+# example_batch = train_imgs.take(10)
+# example_result = model.predict(example_batch)
+# print(example_result)
 
 
 
