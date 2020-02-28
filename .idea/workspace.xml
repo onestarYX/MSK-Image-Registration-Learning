@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b22692c-bfe1-4d2d-a1c9-be8cabbd58d1" name="Default Changelist" comment="" />
+    <list default="true" id="1b22692c-bfe1-4d2d-a1c9-be8cabbd58d1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +48,10 @@
       <workItem from="1582273916239" duration="22000" />
       <workItem from="1582274129385" duration="29000" />
       <workItem from="1582274224841" duration="19000" />
+      <workItem from="1582274537380" duration="14000" />
+      <workItem from="1582308514939" duration="6849000" />
+      <workItem from="1582759470888" duration="238000" />
+      <workItem from="1582915260524" duration="1647000" />
     </task>
     <servers />
   </component>
@@ -54,15 +63,15 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="585" y="120" key="CommitChangelistDialog2/0.0.1920.1050@0.0.1920.1050" timestamp="1581674968769" />
-    <state x="461" y="168" key="SettingsEditor" timestamp="1582274242862">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="346" y="144" key="SettingsEditor" timestamp="1582274547425">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="346" y="144" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1582274150152" />
+    <state x="346" y="144" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1582274547425" />
     <state x="461" y="168" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1582274242862" />
-    <state x="656" y="350" key="com.intellij.ide.util.TipDialog" timestamp="1582274225078">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="492" y="300" key="com.intellij.ide.util.TipDialog" timestamp="1582915261011">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="492" y="300" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1582274130224" />
+    <state x="492" y="300" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1582915261011" />
     <state x="656" y="350" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1582274225078" />
     <state x="623" y="244" width="672" height="678" key="search.everywhere.popup" timestamp="1581055872665">
       <screen x="0" y="0" width="1920" height="1050" />

@@ -175,13 +175,30 @@ def build_model():
                   metrics=['mae', 'mse'])
     return model
 
-model = build_model()
+    # regressor = tf.estimator.BaselineRegressor()
+    # return regressor
 
+
+model = build_model()
 print(model.summary())
+
+
+# def input_fn_train():
+#     return (tf.constant(train_imgs), tf.constant(train_labels))
+#
+# def input_fn_val():
+#     return (tf.constant(val_imgs), tf.constant(val_labels))
+#
+#
+# model.train(input_fn=input_fn_train)
+#
+# loss = model.evaluate(input_fn=input_fn_val)["loss"]
 
 example_batch = train_imgs[0:10]
 example_result = model.predict(example_batch)
 print(example_result)
+
+# print(loss)
 
 EPOCHS = 100
 
@@ -197,6 +214,11 @@ plt.xlabel("Iteration")
 plt.ylabel("Loss")
 plt.title("Loss plot")
 plt.show()
+
+
+
+
+
 
 # imgs = tf.data.Dataset.from_tensor_slices(data[:, :-9])
 # labels = tf.data.Dataset.from_tensor_slices(data[:, -9:])
