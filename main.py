@@ -11,7 +11,7 @@ from tensorflow.keras import layers
 # import tensorflow_docs.plots
 # import tensorflow_docs.modeling
 
-# print(tf.__version__)
+print(tf.__version__)
 
 """ Generate the dataset for rigid image registration (using MS-COCO dataset) """
 # imgList = []
@@ -112,9 +112,15 @@ from tensorflow.keras import layers
 #     else:
 #         patchAReshaped = np.reshape(patchA, -1)
 #         patchBReshaped = np.reshape(patchB, -1)
-#         HReshaped = np.reshape(H, -1)
+#         label = np.float32([
+#             [topLeftRandomX, topLeftRandomY],
+#             [topRightRandomX, topRightRandomY],
+#             [botLeftRandomX, botLeftRandomY],
+#             [botRightRandomX, botRightRandomY]
+#         ])
+#         labelReshaped = np.reshape(label, -1)
 #         dataReshaped = np.append(patchAReshaped, patchBReshaped)
-#         dataReshaped = np.append(dataReshaped, HReshaped)
+#         dataReshaped = np.append(dataReshaped, labelReshaped)
 #         trainingSet.append(dataReshaped)
 #
 # print(badpair)
@@ -143,9 +149,9 @@ from tensorflow.keras import layers
 data = np.loadtxt("./train.txt")
 print(data.shape)
 
-imgs = data[:, :-9]
+imgs = data[:, :-8]
 print(imgs.shape)
-labels = data[:, -9:]
+labels = data[:, -8:]
 print(labels.shape)
 
 train_imgs = imgs
@@ -165,7 +171,7 @@ def build_model():
     model = keras.Sequential([
         layers.Dense(1000, activation='relu', input_shape=(20000,)),
         layers.Dense(500, activation='relu'),
-        layers.Dense(9)
+        layers.Dense(8)
     ])
 
     optimizer = tf.keras.optimizers.RMSprop(0.001)
@@ -194,9 +200,11 @@ print(model.summary())
 #
 # loss = model.evaluate(input_fn=input_fn_val)["loss"]
 
-example_batch = train_imgs[0:10]
-example_result = model.predict(example_batch)
-print(example_result)
+# example_batch = train_imgs[0:10]
+# example_result = model.predict(example_batch)
+# print(example_result)
+# example_true = train_labels[0:10]
+# print(example_true)
 
 # print(loss)
 
