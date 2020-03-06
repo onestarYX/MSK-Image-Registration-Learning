@@ -12,6 +12,7 @@ from tensorflow.keras import layers
 # import tensorflow_docs.modeling
 
 print(tf.__version__)
+# print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 
 """ Generate the dataset for rigid image registration (using MS-COCO dataset) """
 # imgList = []
@@ -181,24 +182,10 @@ def build_model():
                   metrics=['mae', 'mse'])
     return model
 
-    # regressor = tf.estimator.BaselineRegressor()
-    # return regressor
 
 
 model = build_model()
 print(model.summary())
-
-
-# def input_fn_train():
-#     return (tf.constant(train_imgs), tf.constant(train_labels))
-#
-# def input_fn_val():
-#     return (tf.constant(val_imgs), tf.constant(val_labels))
-#
-#
-# model.train(input_fn=input_fn_train)
-#
-# loss = model.evaluate(input_fn=input_fn_val)["loss"]
 
 # example_batch = train_imgs[0:10]
 # example_result = model.predict(example_batch)
@@ -206,9 +193,8 @@ print(model.summary())
 # example_true = train_labels[0:10]
 # print(example_true)
 
-# print(loss)
 
-EPOCHS = 100
+EPOCHS = 1000
 
 history = model.fit(
   train_imgs, train_labels,
